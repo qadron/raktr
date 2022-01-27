@@ -1,5 +1,9 @@
 # ChangeLog
 
+## Version 0.1.3.2
+
+- `Error.translate` updated to handle `Errno::EBADF`. 
+
 ## Version 0.1.3.1
 
 - Fixed strange `private method` error on Ruby 2.6.9.

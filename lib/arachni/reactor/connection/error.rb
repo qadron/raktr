@@ -39,6 +39,8 @@ class Error < Arachni::Reactor::Error
             raise_with_proper_backtrace( e, Reset )
         rescue Errno::EACCES => e
             raise_with_proper_backtrace( e, Permission )
+        rescue Errno::EBADF => e
+            raise_with_proper_backtrace( e, BadSocket )
 
         # Catch and forward these before handling OpenSSL::OpenSSLError because
         # all SSL errors inherit from it, including OpenSSL::SSL::SSLErrorWaitReadable
@@ -100,6 +102,12 @@ class Error < Arachni::Reactor::Error
     #
     # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
     class Closed < Error
+    end
+
+    # Like a `Errno::EBADF` exception.
+    #
+    # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+    class BadSocket < Error
     end
 
     # Like a `OpenSSL::OpenSSLError` exception.
