@@ -2,12 +2,12 @@ require 'socket'
 require 'openssl'
 
 def port_to_socket( port )
-    "/tmp/arachni-reactor-socket-#{port}"
+    "/tmp/raktr-socket-#{port}"
 end
 
 def run_reactor_in_thread
     t = Thread.new do
-        reactor.run
+        raktr.run
     end
     sleep 0.1
     t
@@ -33,7 +33,7 @@ def tcp_write( host, port, data )
     s
 end
 
-if Arachni::Reactor.supports_unix_sockets?
+if Raktr.supports_unix_sockets?
 
     def unix_connect( socket )
         UNIXSocket.new( socket )

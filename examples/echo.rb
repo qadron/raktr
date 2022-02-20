@@ -1,12 +1,9 @@
-require 'arachni/reactor'
-
-# Global, shared Reactor.
-reator = Arachni::Reactor.global
+require 'raktr'
 
 host = '127.0.0.1'
 port = 7331
 
-class EchoServer < Arachni::Reactor::Connection
+class EchoServer < Raktr::Connection
     include TLS
 
     def initialize( append )
@@ -26,7 +23,7 @@ class EchoServer < Arachni::Reactor::Connection
 
 end
 
-class EchoClient < Arachni::Reactor::Connection
+class EchoClient < Raktr::Connection
     include TLS
 
     def initialize( message )
@@ -42,13 +39,13 @@ class EchoClient < Arachni::Reactor::Connection
 
     def on_read( data )
         puts "Client - Got: #{data}"
-        @reactor.stop
+        @raktr.stop
     end
 end
 
-reator.run do
+Raktr do |r|
 
-    reator.listen host, port , EchoServer, '(world, world, world...)'
-    reator.connect host, port, EchoClient, 'Hello world!'
+    r.listen host, port , EchoServer, '(world, world, world...)'
+    r.connect host, port, EchoClient, 'Hello world!'
 
 end

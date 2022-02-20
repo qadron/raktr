@@ -1,7 +1,7 @@
 --no-private
 --markup=markdown
 --verbose
---title "Arachni::Reactor"
+--title "Raktr"
 -
 CHANGELOG.md
 LICENSE.md

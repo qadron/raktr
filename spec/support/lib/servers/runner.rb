@@ -1,5 +1,5 @@
 require 'ap'
-require_relative '../../../../lib/arachni/reactor'
+require_relative '../../../../lib/raktr'
 
 Thread.abort_on_exception = true
 

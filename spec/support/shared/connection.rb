@@ -1,21 +1,21 @@
-shared_examples_for 'Arachni::Reactor::Connection' do
+shared_examples_for 'Raktr::Connection' do
     after(:each) do
-        next if !@reactor
+        next if !@raktr
 
-        if @reactor.running?
-            @reactor.stop
+        if @raktr.running?
+            @raktr.stop
         end
 
-        @reactor = nil
+        @raktr = nil
     end
 
     let(:host){ '127.0.0.1' }
     let(:port){ Servers.available_port }
-    let(:reactor) { @reactor = Arachni::Reactor.new }
-    let(:block_size) { Arachni::Reactor::Connection::BLOCK_SIZE }
+    let(:raktr) { @raktr = Raktr.new }
+    let(:block_size) { Raktr::Connection::BLOCK_SIZE }
     let(:data) { 'b' * 5 * block_size }
     let(:configured) do
-        connection.reactor = reactor
+        connection.raktr = raktr
         connection.configure(
             host:           host,
             port:           port,
@@ -58,10 +58,10 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             # Just to initialize it.
             peer_server_socket
 
-            reactor.run_block do
-                reactor.attach configured
+            raktr.run_block do
+                raktr.attach configured
 
-                c_socket, c_connection = reactor.connections.first.to_a
+                c_socket, c_connection = raktr.connections.first.to_a
 
                 c_socket.to_io.should == socket
                 c_connection.should == connection
@@ -71,7 +71,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         # it 'calls #on_connect' do
         #     peer_server_socket
         #     connection.should receive(:on_connect)
-        #     connection.reactor = reactor
+        #     connection.raktr = reactor
         #     connection.configure socket: socket, role: role
         # end
     end
@@ -90,7 +90,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         end
 
         context 'when using UNIX-domain socket',
-                if: Arachni::Reactor.supports_unix_sockets? do
+                if: Raktr.supports_unix_sockets? do
 
             let(:connection) { echo_client_handler }
             let(:role) { :client }
@@ -118,7 +118,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         end
 
         context 'when using UNIX-domain socket',
-                if: Arachni::Reactor.supports_unix_sockets? do
+                if: Raktr.supports_unix_sockets? do
 
             let(:connection) { echo_client_handler }
             let(:role) { :client }
@@ -140,7 +140,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                 let(:socket) { server_socket }
 
                 it 'returns TCPServer' do
-                    reactor.run_in_thread
+                    raktr.run_in_thread
                     configured
 
                     configured.to_io.should be_kind_of TCPServer
@@ -148,7 +148,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             end
 
             context 'when using UNIX-domain socket',
-                    if: Arachni::Reactor.supports_unix_sockets? do
+                    if: Raktr.supports_unix_sockets? do
 
                 let(:connection) { echo_client_handler }
                 let(:socket) { unix_server_socket }
@@ -167,7 +167,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                 let(:socket) { server_socket }
 
                 it 'returns TCPSocket' do
-                    reactor.run_in_thread
+                    raktr.run_in_thread
                     configured
 
                     Thread.new do
@@ -193,7 +193,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             end
 
             context 'when using UNIX-domain socket',
-                    if: Arachni::Reactor.supports_unix_sockets? do
+                    if: Raktr.supports_unix_sockets? do
 
                 let(:role) { :client }
                 let(:socket) { unix_socket }
@@ -214,7 +214,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                 let(:socket) { server_socket }
 
                 it 'returns true' do
-                    reactor.run_in_thread
+                    raktr.run_in_thread
                     configured
 
                     configured.should be_listener
@@ -222,7 +222,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             end
 
             context 'when using UNIX-domain socket',
-                    if: Arachni::Reactor.supports_unix_sockets? do
+                    if: Raktr.supports_unix_sockets? do
 
                 let(:connection) { echo_client_handler }
                 let(:socket) { unix_server_socket }
@@ -241,7 +241,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                 let(:socket) { server_socket }
 
                 it 'returns false' do
-                    reactor.run_in_thread
+                    raktr.run_in_thread
                     configured
 
                     Thread.new do
@@ -267,7 +267,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             end
 
             context 'when using UNIX-domain socket',
-                    if: Arachni::Reactor.supports_unix_sockets? do
+                    if: Raktr.supports_unix_sockets? do
 
                 let(:role) { :client }
                 let(:socket) { unix_socket }
@@ -288,22 +288,22 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             peer_server_socket
             configured
 
-            reactor.run_in_thread
+            raktr.run_in_thread
 
-            connection.attach( reactor ).should be_truthy
+            connection.attach( raktr ).should be_truthy
             sleep 1
 
-            reactor.attached?( configured ).should be_truthy
+            raktr.attached?( configured ).should be_truthy
         end
 
         it 'calls #on_attach' do
             peer_server_socket
             configured
 
-            reactor.run_in_thread
+            raktr.run_in_thread
 
             configured.should receive(:on_attach)
-            connection.attach reactor
+            connection.attach raktr
 
             sleep 1
         end
@@ -314,12 +314,12 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                     peer_server_socket
                     configured
 
-                    reactor.run_in_thread
+                    raktr.run_in_thread
 
-                    connection.attach reactor
+                    connection.attach raktr
                     sleep 0.1 while connection.detached?
 
-                    connection.attach( reactor ).should be_falsey
+                    connection.attach( raktr ).should be_falsey
                 end
             end
 
@@ -328,12 +328,12 @@ shared_examples_for 'Arachni::Reactor::Connection' do
                     peer_server_socket
                     configured
 
-                    reactor.run_in_thread
+                    raktr.run_in_thread
 
-                    connection.attach reactor
+                    connection.attach raktr
                     sleep 0.1 while connection.detached?
 
-                    r = Arachni::Reactor.new
+                    r = Raktr.new
                     r.run_in_thread
 
                     configured.should receive(:on_detach)
@@ -355,24 +355,24 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             peer_server_socket
             configured
 
-            reactor.run_in_thread
+            raktr.run_in_thread
 
-            connection.attach reactor
+            connection.attach raktr
             sleep 0.1 while !connection.attached?
 
             connection.detach
             sleep 0.1 while connection.attached?
 
-            reactor.attached?( configured ).should be_falsey
+            raktr.attached?( configured ).should be_falsey
         end
 
         it 'calls #on_detach' do
             peer_server_socket
             configured
 
-            reactor.run_in_thread
+            raktr.run_in_thread
 
-            connection.attach reactor
+            connection.attach raktr
             sleep 0.1 while !connection.attached?
 
             configured.should receive(:on_detach)
@@ -389,7 +389,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
 
         it 'appends the given data to the send-buffer' do
             peer_server_socket
-            reactor.run_in_thread
+            raktr.run_in_thread
 
             configured
 
@@ -426,7 +426,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         let(:data) { "data\n" }
 
         it 'accepts a new client connection' do
-            reactor.run_in_thread
+            raktr.run_in_thread
             configured
 
             client = nil
@@ -456,7 +456,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
             let(:role) { :client }
             let(:socket) { client_socket }
 
-            it "reads a maximum of #{Arachni::Reactor::Connection::BLOCK_SIZE} bytes at a time" do
+            it "reads a maximum of #{Raktr::Connection::BLOCK_SIZE} bytes at a time" do
                 peer_server_socket
                 configured
 
@@ -499,7 +499,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
 
             it 'accepts a new client connection' do
                 configured
-                reactor.run_in_thread
+                raktr.run_in_thread
 
                 client = nil
 
@@ -524,7 +524,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
 
     describe '#_write' do
         before :each do
-            reactor.run_in_thread
+            raktr.run_in_thread
         end
 
         let(:port) { @port }
@@ -533,7 +533,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         let(:role) { :client }
         let(:socket) { echo_client }
 
-        it "consumes the write-buffer a maximum of #{Arachni::Reactor::Connection::BLOCK_SIZE} bytes at a time" do
+        it "consumes the write-buffer a maximum of #{Raktr::Connection::BLOCK_SIZE} bytes at a time" do
             configured.write data
             sleep 0.1 while !configured.has_outgoing_data?
 
@@ -596,7 +596,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
 
         context 'when the send-buffer is not empty' do
             it 'returns true' do
-                reactor.run_in_thread
+                raktr.run_in_thread
 
                 configured.write 'test'
                 sleep 0.1 while !configured.has_outgoing_data?
@@ -621,7 +621,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
 
         context 'when the connection has been closed' do
             it 'returns true' do
-                reactor.run do
+                raktr.run do
                     configured.close
                 end
 
@@ -644,7 +644,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         let(:socket) { echo_client }
 
         it 'closes the #socket' do
-            reactor.run_in_thread
+            raktr.run_in_thread
             configured.socket.should receive(:close)
             configured.close_without_callback
         end
@@ -652,16 +652,16 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         it 'detaches the connection from the reactor' do
             configured
 
-            reactor.run_block do
-                reactor.attach configured
-                reactor.connections.should be_any
+            raktr.run_block do
+                raktr.attach configured
+                raktr.connections.should be_any
                 configured.close_without_callback
-                reactor.connections.should be_empty
+                raktr.connections.should be_empty
             end
         end
 
         it 'does not call #on_close' do
-            reactor.run_in_thread
+            raktr.run_in_thread
             configured.should_not receive(:on_close)
             configured.close_without_callback
         end
@@ -674,7 +674,7 @@ shared_examples_for 'Arachni::Reactor::Connection' do
         let(:role) { :client }
         let(:socket) { echo_client }
 
-        before(:each) { reactor.run_in_thread }
+        before(:each) { raktr.run_in_thread }
 
         it 'calls #close_without_callback' do
             configured.should receive(:close_without_callback)

@@ -1,4 +1,4 @@
-class EchoServer < Arachni::Reactor::Connection
+class EchoServer < Raktr::Connection
     attr_reader :initialization_args
 
     def initialize( *args )

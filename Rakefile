@@ -1,13 +1,13 @@
 =begin
 
-    This file is part of the Arachni::Reactor project and may be subject to
-    redistribution and commercial restrictions. Please see the Arachni::Reactor
+    This file is part of the Raktr project and may be subject to
+    redistribution and commercial restrictions. Please see the Raktr
     web site for more information on licensing and terms of use.
 
 =end
 
 require 'rubygems'
-require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/reactor/version'
+require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/raktr/version'
 
 begin
     require 'rspec'
@@ -21,7 +21,7 @@ task default: [ :build, :spec ]
 
 desc 'Generate docs'
 task :docs do
-    outdir = '../arachni-reactor-docs'
+    outdir = '../raktr-docs'
     sh "rm -rf #{outdir}"
     sh "mkdir -p #{outdir}"
 
@@ -37,17 +37,17 @@ end
 
 desc 'Build the gem.'
 task build: [ :clean ] do
-    sh "gem build arachni-reactor.gemspec"
+    sh "gem build raktr.gemspec"
 end
 
 desc 'Build and install the gem.'
 task install: [ :build ] do
-    sh "gem install arachni-reactor-#{Arachni::Reactor::VERSION}.gem"
+    sh "gem install raktr-#{Raktr::VERSION}.gem"
 end
 
 desc 'Push a new version to Rubygems'
 task publish: [ :build ] do
-    sh "git tag -a v#{Arachni::Reactor::VERSION} -m 'Version #{Arachni::Reactor::VERSION}'"
-    sh "gem push arachni-reactor-#{Arachni::Reactor::VERSION}.gem"
+    sh "git tag -a v#{Raktr::VERSION} -m 'Version #{Raktr::VERSION}'"
+    sh "gem push raktr-#{Raktr::VERSION}.gem"
 end
 task release: [ :publish ]

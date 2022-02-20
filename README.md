@@ -1,4 +1,4 @@
-# Arachni::Reactor
+# Raktr
 
 <table>
     <tr>
@@ -7,23 +7,19 @@
     </tr>
     <tr>
         <th>Github page</th>
-        <td><a href="http://github.com/Arachni/arachni-reactor">http://github.com/Arachni/arachni-reactor</a></td>
+        <td><a href="http://github.com/qadron/raktr">http://github.com/qadron/raktr</a></td>
      <tr/>
     <tr>
         <th>Code Documentation</th>
-        <td><a href="http://rubydoc.info/github/Arachni/arachni-reactor/">http://rubydoc.info/github/Arachni/arachni-reactor/</a></td>
+        <td><a href="http://rubydoc.info/github/qadron/raktr/">http://rubydoc.info/github/qadron/raktr/</a></td>
     </tr>
     <tr>
        <th>Author</th>
        <td><a href="http://twitter.com/Zap0tek">Tasos Laskos</a></td>
     </tr>
     <tr>
-        <th>Twitter</th>
-        <td><a href="http://twitter.com/ArachniScanner">@ArachniScanner</a></td>
-    </tr>
-    <tr>
         <th>Copyright</th>
-        <td>2014-2017 <a href="http://www.sarosys.com">Sarosys LLC</a></td>
+        <td>2022 <a href="https://ecsypno.com">Ecsypno</a></td>
     </tr>
     <tr>
         <th>License</th>
@@ -33,7 +29,7 @@
 
 ## Synopsis
 
-`Arachni::Reactor` is a simple, lightweight, pure-Ruby implementation of the
+Raktr is a simple, lightweight, pure-Ruby implementation of the
 [Reactor](http://en.wikipedia.org/wiki/Reactor_pattern) pattern, mainly focused
 on network connections -- and less so on generic tasks.
 
@@ -63,7 +59,7 @@ For examples please see the `examples/` directory.
 
 ## Installation
 
-    gem install arachni-reactor
+    gem install raktr
 
 ## Running the Specs
 
@@ -72,10 +68,10 @@ For examples please see the `examples/` directory.
 ## Bug reports/Feature requests
 
 Please send your feedback using GitHub's issue system at
-[http://github.com/arachni/arachni-reactor/issues](http://github.com/arachni/arachni-reactor/issues).
+[http://github.com/qadron/raktr/issues](http://github.com/qadron/raktr/issues).
 
 
 ## License
 
-Arachni::Reactor is provided under the 3-clause BSD license.
-See the [LICENSE](https://github.com/Arachni/arachni-reactor/blob/master/LICENSE.md) file for more information.
+Raktr is provided under the 3-clause BSD license.
+See the [LICENSE](https://github.com/qadron/raktr/blob/master/LICENSE.md) file for more information.

@@ -1,6 +1,6 @@
 # License
 
-    Copyright (C) 2014-2017, Sarosys LLC <http://www.sarosys.com/>
+    Copyright (C) 2022, Ecsypno <https://ecsypno.com/>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification,

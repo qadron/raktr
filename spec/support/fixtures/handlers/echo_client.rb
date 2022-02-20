@@ -1,4 +1,4 @@
-class EchoClient < Arachni::Reactor::Connection
+class EchoClient < Raktr::Connection
 
     attr_reader :initialization_args
     attr_reader :received_data
@@ -23,12 +23,12 @@ class EchoClient < Arachni::Reactor::Connection
 
     def on_close( error )
         @error = error
-        @reactor.stop
+        @raktr.stop
     end
 
     def on_read( data )
         (@received_data ||= '') << data
-        @reactor.stop if @received_data.end_with? "\n\n"
+        @raktr.stop if @received_data.end_with? "\n\n"
     end
 
 end

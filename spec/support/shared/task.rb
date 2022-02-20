@@ -1,5 +1,5 @@
-shared_examples_for 'Arachni::Reactor::Tasks::Base' do
-    let(:list) { Arachni::Reactor::Tasks.new }
+shared_examples_for 'Raktr::Tasks::Base' do
+    let(:list) { Raktr::Tasks.new }
 
     it { should respond_to :owner }
     it { should respond_to :owner= }
