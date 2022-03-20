@@ -4,6 +4,7 @@ require 'net/http'
 class Servers
     include Singleton
 
+    require_relative '../helpers/paths'
     RUNNER = "#{support_lib_path}/servers/runner.rb"
 
     attr_reader :lib

@@ -77,18 +77,16 @@ module TLS
     def _connect
         return if @ssl_connected
 
-        Error.translate do
-            @plaintext_connected ||= super
-            return if !@plaintext_connected
+        @plaintext_connected ||= super
+        return if !@plaintext_connected
 
-            # Mark the connection as not connected due to the pending SSL handshake.
-            @connected = false
+        # Mark the connection as not connected due to the pending SSL handshake.
+        @connected = false
 
-            @socket.connect_nonblock
-            @ssl_connected = @connected = true
-        end
+        @socket.connect_nonblock
+        @ssl_connected = @connected = true
     rescue IO::WaitReadable, IO::WaitWritable, Errno::EINPROGRESS
-    rescue Error => e
+    rescue => e
         close e
     end
 
@@ -118,11 +116,9 @@ module TLS
     private
 
     def ssl_accept
-        Error.translate do
-            @accepted = !!@socket.accept_nonblock
-        end
+        @accepted = !!@socket.accept_nonblock
     rescue IO::WaitReadable, IO::WaitWritable
-    rescue Error => e
+    rescue => e
         close e
         false
     end
@@ -142,19 +138,17 @@ module TLS
     #
     # @private
     def socket_accept
-        Error.translate do
-            socket = to_io.accept_nonblock
+        socket = to_io.accept_nonblock
 
-            ssl_socket = OpenSSL::SSL::SSLSocket.new(
-                socket,
-                @ssl_context
-            )
-            ssl_socket.sync_close = true
-            ssl.accept if @start_immediately
-            ssl_socket
-        end
+        ssl_socket = OpenSSL::SSL::SSLSocket.new(
+            socket,
+            @ssl_context
+        )
+        ssl_socket.sync_close = true
+        ssl.accept if @start_immediately
+        ssl_socket
     rescue IO::WaitReadable, IO::WaitWritable
-    rescue Error => e
+    rescue => e
         close e
     end
 

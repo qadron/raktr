@@ -195,14 +195,12 @@ class Raktr
         block.call connection if block_given?
 
         begin
-            Connection::Error.translate do
-                socket = options[:unix_socket] ?
-                    connect_unix( options[:unix_socket] ) : connect_tcp
+            socket = options[:unix_socket] ?
+                connect_unix( options[:unix_socket] ) : connect_tcp
 
-                connection.configure options.merge( socket: socket, role: :client )
-                attach connection
-            end
-        rescue Connection::Error => e
+            connection.configure options.merge( socket: socket, role: :client )
+            attach connection
+        rescue => e
             connection.close e
         end
 
@@ -258,15 +256,13 @@ class Raktr
         server = server_handler.call
 
         begin
-            Connection::Error.translate do
-                socket = options[:unix_socket] ?
-                    listen_unix( options[:unix_socket] ) :
-                    listen_tcp( options[:host], options[:port] )
+            socket = options[:unix_socket] ?
+                listen_unix( options[:unix_socket] ) :
+                listen_tcp( options[:host], options[:port] )
 
-                server.configure options.merge( socket: socket, role: :server, server_handler: server_handler )
-                attach server
-            end
-        rescue Connection::Error => e
+            server.configure options.merge( socket: socket, role: :server, server_handler: server_handler )
+            attach server
+        rescue => e
             server.close e
         end
 
@@ -659,10 +655,8 @@ class Raktr
 
         selected_sockets =
             begin
-                Connection::Error.translate do
-                    select( r, w, e, @select_timeout )
-                end
-            rescue Connection::Error => e
+                select( r, w, e, @select_timeout )
+            rescue => e
                 nil
             end
 

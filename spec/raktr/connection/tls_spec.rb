@@ -141,7 +141,7 @@ describe Raktr::Connection::TLS do
                 context 'and options have been provided' do
                     let(:client_ssl_options) { client_valid_ssl_options }
 
-                    it "passes #{Raktr::Connection::Error::SSL} to #on_error" do
+                    it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                         error = nil
 
                         options = server_ssl_options.merge(
@@ -165,7 +165,7 @@ describe Raktr::Connection::TLS do
 
                         raktr.wait rescue Raktr::Error::NotRunning
 
-                        error.should be_kind_of Raktr::Connection::Error::SSL
+                        error.should be_kind_of OpenSSL::SSL::SSLError
                     end
                 end
             end
@@ -199,7 +199,7 @@ describe Raktr::Connection::TLS do
                     context 'and are invalid' do
                         let(:client_ssl_options) { client_invalid_ssl_options }
 
-                        it "passes #{Raktr::Connection::Error::SSL} to #on_error" do
+                        it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                             error = nil
 
                             options = server_ssl_options.merge(
@@ -222,7 +222,7 @@ describe Raktr::Connection::TLS do
 
                             raktr.wait rescue Raktr::Error::NotRunning
 
-                            error.should be_kind_of Raktr::Connection::Error::SSL
+                            error.should be_kind_of OpenSSL::SSL::SSLError
                         end
                     end
                 end
@@ -230,7 +230,7 @@ describe Raktr::Connection::TLS do
                 context 'and no options have been provided' do
                     let(:client_ssl_options) { {} }
 
-                    it "passes #{Raktr::Connection::Error::SSL} to #on_error" do
+                    it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                         error = nil
 
                         options = server_ssl_options.merge(
@@ -254,7 +254,7 @@ describe Raktr::Connection::TLS do
 
                         raktr.wait rescue Raktr::Error::NotRunning
 
-                        error.should be_kind_of Raktr::Connection::Error::SSL
+                        error.should be_kind_of OpenSSL::SSL::SSLError
                     end
                 end
             end
@@ -302,13 +302,13 @@ describe Raktr::Connection::TLS do
                 let(:server_ssl_options) { server_valid_ssl_options }
 
                 context 'and no options have been provided' do
-                    it "passes #{Raktr::Connection::Error} to #on_error" do
+                    it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                         connection = nil
                         raktr.run do
                             connection = raktr.connect( host, port, TLSHandler )
                         end
 
-                        connection.error.should be_kind_of Raktr::Connection::Error
+                        connection.error.should be_kind_of OpenSSL::SSL::SSLError
                     end
                 end
 
@@ -332,13 +332,13 @@ describe Raktr::Connection::TLS do
                     end
 
                     context 'and are invalid' do
-                        it "passes #{Raktr::Connection::Error} to #on_error" do
+                        it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                             connection = nil
                             raktr.run do
                                 connection = raktr.connect( host, port, TLSHandler, client_invalid_ssl_options )
                             end
 
-                            connection.error.should be_kind_of Raktr::Connection::Error
+                            connection.error.should be_kind_of OpenSSL::SSL::SSLError
                         end
                     end
                 end

@@ -578,7 +578,7 @@ shared_examples_for 'Raktr' do
             end
 
             context 'when the socket is invalid' do
-                it "calls #on_close with #{klass::Connection::Error::HostNotFound}" do
+                it "calls #on_close with #{Errno::ENOENT}" do
                     outside_thread = Thread.current
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
@@ -591,7 +591,7 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    Thread.current[:outside_thread][:error].should be_a_kind_of klass::Connection::Error::HostNotFound
+                    Thread.current[:outside_thread][:error].should be_a_kind_of Errno::ENOENT
                 end
             end
         end
@@ -625,7 +625,7 @@ shared_examples_for 'Raktr' do
             end
 
             context 'when the host is invalid' do
-                it "calls #on_close with #{klass::Connection::Error::HostNotFound}" do
+                it "calls #on_close with #{SocketError}" do
                     outside_thread = Thread.current
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
@@ -638,12 +638,12 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    Thread.current[:outside_thread][:error].should be_a_kind_of klass::Connection::Error::HostNotFound
+                    Thread.current[:outside_thread][:error].should be_a_kind_of SocketError
                 end
             end
 
             context 'when the port is invalid' do
-                it "calls #on_close with #{klass::Connection::Error::Refused}" do
+                it "calls #on_close with #{Errno::ECONNREFUSED}" do
                     outside_thread = Thread.current
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
@@ -663,9 +663,9 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    [:error, klass::Connection::Error::Closed,
-                     klass::Connection::Error::Refused,
-                     Raktr::Connection::Error::BrokenPipe
+                    [:error, IOError,
+                     Errno::ECONNREFUSED,
+                     Errno::EPIPE
                     ].should include Thread.current[:outside_thread][:error]
                 end
             end
@@ -735,7 +735,7 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    [:error, klass::Connection::Error::Permission].should include Thread.current[:outside_thread][:error]
+                    [:error, Errno::EACCES].should include Thread.current[:outside_thread][:error]
                 end
             end
         end
@@ -777,7 +777,7 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    [:error, klass::Connection::Error::HostNotFound].should include Thread.current[:outside_thread][:error]
+                    [:error, SocketError].should include Thread.current[:outside_thread][:error]
                 end
             end
 
@@ -802,7 +802,7 @@ shared_examples_for 'Raktr' do
                         end
                     end
 
-                    [:error, klass::Connection::Error::Permission].should include Thread.current[:outside_thread][:error]
+                    [:error, Errno::EACCES].should include Thread.current[:outside_thread][:error]
                 end
             end
         end

@@ -6,7 +6,6 @@
 
 =end
 
-require_relative 'connection/error'
 require_relative 'connection/callbacks'
 require_relative 'connection/peer_info'
 require_relative 'connection/tls'
@@ -229,9 +228,7 @@ class Connection
         return true if unix? || connected?
 
         begin
-            Error.translate do
-                socket.connect_nonblock( Socket.sockaddr_in( @port, @host ) )
-            end
+            socket.connect_nonblock( Socket.sockaddr_in( @port, @host ) )
         # Already connected. :)
         rescue Errno::EISCONN, Errno::EALREADY
         end
@@ -241,7 +238,7 @@ class Connection
 
         true
     rescue IO::WaitReadable, IO::WaitWritable, Errno::EINPROGRESS
-    rescue Error => e
+    rescue => e
         close e
     end
 
@@ -256,13 +253,11 @@ class Connection
         return _connect if !listener? && !connected?
         return accept   if listener?
 
-        Error.translate do
-            on_read @socket.read_nonblock( BLOCK_SIZE )
-        end
+        on_read @socket.read_nonblock( BLOCK_SIZE )
 
     # Not ready to read or write yet, we'll catch it on future Reactor ticks.
     rescue IO::WaitReadable, IO::WaitWritable
-    rescue Error => e
+    rescue => e
         close e
     end
 
@@ -282,22 +277,21 @@ class Connection
     def _write
         return _connect if !connected?
 
-        chunk = write_buffer.byteslice( 0, BLOCK_SIZE )
+        write_buffer.force_encoding( Encoding::BINARY )
+        chunk = write_buffer[0, BLOCK_SIZE]
         total_written = 0
 
         begin
-            Error.translate do
-                # Send out the chunk, **all** of it, or at least try to.
-                loop do
-                    total_written += written = @socket.write_nonblock( chunk )
-                    @write_buffer = @write_buffer.byteslice( written..-1 )
+            # Send out the chunk, **all** of it, or at least try to.
+            loop do
+                total_written += written = @socket.write_nonblock( chunk )
+                write_buffer[0, written] = ''
 
-                    # Call #on_write every time any of the buffer is consumed.
-                    on_write
+                # Call #on_write every time any of the buffer is consumed.
+                on_write
 
-                    break if written == chunk.bytesize
-                    chunk = chunk.byteslice( written..-1 )
-                end
+                break if written == chunk.size
+                chunk[0, written] = ''
             end
 
         # Not ready to read or write yet, we'll catch it on future Reactor ticks.
@@ -310,7 +304,7 @@ class Connection
         end
 
         total_written
-    rescue Error => e
+    rescue => e
         close e
     end
 
