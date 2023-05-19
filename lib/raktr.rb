@@ -202,6 +202,7 @@ class Raktr
             attach connection
         rescue => e
             connection.close e
+            raise
         end
 
         connection
@@ -264,6 +265,7 @@ class Raktr
             attach server
         rescue => e
             server.close e
+            raise
         end
 
         server
