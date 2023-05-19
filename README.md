@@ -1,34 +1,5 @@
 # Raktr
 
-<table>
-    <tr>
-        <th>Version</th>
-        <td>0.0.1</td>
-    </tr>
-    <tr>
-        <th>Github page</th>
-        <td><a href="http://github.com/qadron/raktr">http://github.com/qadron/raktr</a></td>
-     <tr/>
-    <tr>
-        <th>Code Documentation</th>
-        <td><a href="http://rubydoc.info/github/qadron/raktr/">http://rubydoc.info/github/qadron/raktr/</a></td>
-    </tr>
-    <tr>
-       <th>Author</th>
-       <td><a href="http://twitter.com/Zap0tek">Tasos Laskos</a></td>
-    </tr>
-    <tr>
-        <th>Copyright</th>
-        <td>2022 <a href="https://ecsypno.com">Ecsypno</a></td>
-    </tr>
-    <tr>
-        <th>License</th>
-        <td><a href="file.LICENSE.html">3-clause BSD</a></td>
-    </tr>
-</table>
-
-## Synopsis
-
 Raktr is a simple, lightweight, pure-Ruby implementation of the
 [Reactor](http://en.wikipedia.org/wiki/Reactor_pattern) pattern, mainly focused
 on network connections -- and less so on generic tasks.
