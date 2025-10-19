@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
     require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/raktr/version'
 
     s.name              = 'raktr'
-    s.license           = 'BSD 3-Clause'
+    s.license           = 'MPL v2'
     s.version           = Raktr::VERSION
     s.date              = Time.now.strftime('%Y-%m-%d')
     s.summary           = 'A pure-Ruby implementation of the Reactor pattern.'
