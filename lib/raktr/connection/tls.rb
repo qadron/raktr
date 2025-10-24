@@ -32,7 +32,7 @@ module TLS
 
         certificate = options[:certificate] || ENV['RAKTR_TLS_CERTIFICATE']
         private_key = options[:private_key] || ENV['RAKTR_TLS_PRIVATE_KEY']
-        ca          = options[:private_key] || ENV['RAKTR_TLS_CA']
+        ca          = options[:ca]          || ENV['RAKTR_TLS_CA']
 
         if certificate && private_key
             @ssl_context.cert =
