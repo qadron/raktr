@@ -149,7 +149,7 @@ class Raktr
     #   List to iterate.
     # @param    [Integer]   concurrency
     #   Parallel workers to spawn.
-    def create_iterator( list, concurrency = 1 )
+    def create_iterator( list, concurrency = 1000 )
         Raktr::Iterator.new( self, list, concurrency )
     end
 
