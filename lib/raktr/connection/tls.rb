@@ -30,14 +30,17 @@ module TLS
         @ssl_context = OpenSSL::SSL::SSLContext.new
         @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-        if options[:certificate] && options[:private_key]
+        certificate = options[:certificate] || ENV['RAKTR_TLS_CERTIFICATE']
+        private_key = options[:private_key] || ENV['RAKTR_TLS_PRIVATE_KEY']
+        ca          = options[:private_key] || ENV['RAKTR_TLS_CA']
 
+        if certificate && private_key
             @ssl_context.cert =
-                OpenSSL::X509::Certificate.new( File.open( options[:certificate] ) )
+                OpenSSL::X509::Certificate.new( File.open( certificate ) )
             @ssl_context.key  =
-                OpenSSL::PKey::RSA.new( File.open( options[:private_key] ) )
+                OpenSSL::PKey::RSA.new( File.open( private_key ) )
 
-            @ssl_context.ca_file     = options[:ca]
+            @ssl_context.ca_file     = ca
             @ssl_context.verify_mode =
                 OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT
 
