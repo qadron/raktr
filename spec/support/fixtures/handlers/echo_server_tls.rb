@@ -1,3 +1,5 @@
+require_relative 'echo_server'
+
 class EchoServerTLS < EchoServer
     include TLS
 

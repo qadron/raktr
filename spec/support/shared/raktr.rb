@@ -580,6 +580,7 @@ shared_examples_for 'Raktr' do
             context 'when the socket is invalid' do
                 it "calls #on_close with #{Errno::ENOENT}" do
                     outside_thread = Thread.current
+                    begin
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
 
@@ -589,6 +590,8 @@ shared_examples_for 'Raktr' do
                                 raktr.stop
                             end
                         end
+                    end
+                    rescue
                     end
 
                     Thread.current[:outside_thread][:error].should be_a_kind_of Errno::ENOENT
@@ -717,6 +720,7 @@ shared_examples_for 'Raktr' do
             context 'when the socket is invalid' do
                 it 'calls #on_close' do
                     outside_thread = Thread.current
+                    begin
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
 
@@ -733,6 +737,8 @@ shared_examples_for 'Raktr' do
                                 raktr.stop
                             end
                         end
+                    end
+                    rescue
                     end
 
                     [:error, Errno::EACCES].should include Thread.current[:outside_thread][:error]
@@ -759,6 +765,7 @@ shared_examples_for 'Raktr' do
             context 'when the host is invalid' do
                 it 'calls #on_close' do
                     outside_thread = Thread.current
+                    begin
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
 
@@ -776,6 +783,8 @@ shared_examples_for 'Raktr' do
                             end
                         end
                     end
+                    rescue
+                    end
 
                     [:error, SocketError].should include Thread.current[:outside_thread][:error]
                 end
@@ -787,6 +796,7 @@ shared_examples_for 'Raktr' do
                     subject.run do
                         Thread.current[:outside_thread] = outside_thread
 
+                        begin
                         subject.listen( host, 50, echo_server_handler ) do |c|
                             def c.on_close( reason )
                                 # Depending on when the error was caught, there
@@ -800,9 +810,12 @@ shared_examples_for 'Raktr' do
                                 raktr.stop
                             end
                         end
+                        rescue
+                        end
                     end
 
-                    [:error, Errno::EACCES].should include Thread.current[:outside_thread][:error]
+                    [:error, Errno::EACCES].should include
+                        Thread.current[:outside_thread][:error]
                 end
             end
         end

@@ -32,6 +32,7 @@ module TLS
 
         certificate = options[:certificate] || ENV['RAKTR_TLS_CERTIFICATE']
         private_key = options[:private_key] || ENV['RAKTR_TLS_PRIVATE_KEY']
+        public_key  = options[:public_key]  || ENV['RAKTR_TLS_PUBLIC_KEY']
         ca          = options[:private_key] || ENV['RAKTR_TLS_CA']
 
         if certificate && private_key
@@ -39,6 +40,8 @@ module TLS
                 OpenSSL::X509::Certificate.new( File.open( certificate ) )
             @ssl_context.key  =
                 OpenSSL::PKey::RSA.new( File.open( private_key ) )
+            @ssl_context.cert.public_key =
+              OpenSSL::PKey::RSA.new(File.open(public_key))
 
             @ssl_context.ca_file     = ca
             @ssl_context.verify_mode =
