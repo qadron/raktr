@@ -77,14 +77,15 @@ describe Raktr::Connection::TLS do
 
     let(:client_valid_ssl_options) do
         {
-            ca:          pems_path + '/cacert.pem',
+            ca:          pems_path + '/ca-cert.pem',
             private_key: pems_path + '/client/key.pem',
+            public_key:  pems_path + '/client/pub.pem',
             certificate: pems_path + '/client/cert.pem'
         }
     end
     let(:client_invalid_ssl_options) do
         {
-            ca:          pems_path + '/cacert.pem',
+            ca:          pems_path + '/ca-cert.pem',
             private_key: pems_path + '/client/foo-key.pem',
             certificate: pems_path + '/client/foo-cert.pem'
         }
@@ -92,8 +93,9 @@ describe Raktr::Connection::TLS do
 
     let(:server_valid_ssl_options) do
         {
-            ca:          pems_path + '/cacert.pem',
+            ca:          pems_path + '/ca-cert.pem',
             private_key: pems_path + '/server/key.pem',
+            public_key:  pems_path + '/server/pub.pem',
             certificate: pems_path + '/server/cert.pem'
         }
     end
