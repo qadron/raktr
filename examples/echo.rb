@@ -6,13 +6,12 @@ port = 7331
 class EchoServer < Raktr::Connection
     include TLS
 
-    def initialize( append, options = { } )
-        @tls =  options[:tls]
+    def initialize( append, options = {} )
         @append = append
     end
 
     def on_connect
-        start_tls @tls
+        start_tls
     end
 
     def on_read( data )
@@ -33,7 +32,7 @@ class EchoClient < Raktr::Connection
     end
 
     def on_connect
-        start_tls @tls
+        start_tls
 
         puts "Client - Sending: #{@message}"
         write @message
@@ -47,19 +46,19 @@ end
 
 Raktr do |r|
 
-    r.listen host, port ,EchoServer, '(world, world, world...)',
+    r.listen host, port, EchoServer, '(world, world, world...)',
         tls: {
-            ca:           '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
+            ca:          '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
             certificate: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/cert.pem',
             public_key:  '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/pub.pem',
             private_key: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/key.pem'
         }
     r.connect host, port, EchoClient, 'Hello world!',
-              tls: {
-                ca:           '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
-                certificate: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/cert.pem',
-                public_key:  '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/pub.pem',
-                private_key: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/key.pem'
-              }
+          tls: {
+            ca:          '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
+            certificate: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/cert.pem',
+            public_key:  '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/pub.pem',
+            private_key: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/key.pem'
+          }
 
 end

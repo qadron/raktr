@@ -188,8 +188,14 @@ class Raktr
     def connect( *args, &block )
         fail_if_not_running
 
+        tls = nil
+        if args.last.is_a?( Hash ) && args.last.include?( :tls )
+            tls = args.last[:tls]
+        else
+            tls = determine_tls_options( :server )
+        end
+
         options = determine_connection_options( *args )
-        options[:tls] = determine_tls_options( :client )
 
         connection = options[:handler].new( *options[:handler_options] )
         connection.raktr = self
@@ -199,7 +205,7 @@ class Raktr
             socket = options[:unix_socket] ?
                 connect_unix( options[:unix_socket] ) : connect_tcp
 
-            connection.configure options.merge( socket: socket, role: :client )
+            connection.configure options.merge( socket: socket, tls: tls, role: :client )
             attach connection
         rescue => e
             connection.close e
@@ -246,11 +252,14 @@ class Raktr
     def listen( *args, &block )
         fail_if_not_running
 
-        options = determine_connection_options( *args )
-        options[:tls] =  determine_tls_options( :server )
+        tls = nil
+        if args.last.is_a?( Hash ) && args.last.include?( :tls )
+            tls = args.last[:tls]
+        else
+            tls = determine_tls_options( :server )
+        end
 
-        require 'ap'
-        ap options
+        options = determine_connection_options( *args )
 
         server_handler = proc do
             c = options[:handler].new( *options[:handler_options] )
@@ -266,7 +275,7 @@ class Raktr
                 listen_unix( options[:unix_socket] ) :
                 listen_tcp( options[:host], options[:port] )
 
-            server.configure options.merge( socket: socket, role: :server, server_handler: server_handler )
+            server.configure options.merge( socket: socket, tls: tls, role: :server, server_handler: server_handler )
             attach server
         rescue => e
             server.close e
@@ -579,7 +588,15 @@ class Raktr
         end
 
         options[:handler]       ||= Connection
+
+        # if handler_options[1]
+        #     handler_options[1].delete :tls
+        # end
+
         options[:handler_options] = handler_options
+        if args.last.is_a?( Hash ) && args.last.include?( :tls )
+            options[:tls] = args.last.delete( :tls )
+        end
 
         options
     end

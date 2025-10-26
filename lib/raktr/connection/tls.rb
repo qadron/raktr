@@ -32,12 +32,12 @@ module TLS
         @ssl_context = OpenSSL::SSL::SSLContext.new
         @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-        if options[:tls]
-            options     = options[:tls]
-            certificate = options[:certificate]
-            private_key = options[:private_key]
-            public_key  = options[:public_key]
-            ca          = options[:ca]
+        tls = @tls || options
+        if tls
+            certificate = tls[:certificate]
+            private_key = tls[:private_key]
+            public_key  = tls[:public_key]
+            ca          = tls[:ca]
         end
 
         if certificate && private_key && public_key && ca

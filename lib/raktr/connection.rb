@@ -205,6 +205,7 @@ class Connection
     # @private
     def configure( options = {} )
         @socket         = options[:socket]
+        @tls            = options[:tls]
         @role           = options[:role]
         @host           = options[:host]
         @port           = options[:port]
