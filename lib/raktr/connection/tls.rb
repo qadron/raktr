@@ -12,6 +12,8 @@ class Connection
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 module TLS
 
+    CERTIFICATES = {}
+
     # Converts the {#socket} to an SSL one.
     #
     # @param    [Hash]  options
@@ -36,13 +38,17 @@ module TLS
         ca          = options[:ca]
 
         if certificate && private_key && public_key && ca
-
+            CERTIFICATES[certificate] ||= File.open( certificate )
             @ssl_context.cert =
-                OpenSSL::X509::Certificate.new( File.open( certificate ) )
+                OpenSSL::X509::Certificate.new( CERTIFICATES[certificate] )
+
+            CERTIFICATES[private_key] ||= File.open( private_key )
             @ssl_context.key  =
-                OpenSSL::PKey::RSA.new( File.open( private_key ) )
+                OpenSSL::PKey::RSA.new( CERTIFICATES[private_key] )
+
+            CERTIFICATES[public_key] ||= File.open( public_key )
             @ssl_context.cert.public_key =
-              OpenSSL::PKey::RSA.new(File.open(public_key))
+              OpenSSL::PKey::RSA.new( CERTIFICATES[public_key] )
 
             @ssl_context.ca_file     = ca
             @ssl_context.verify_mode =
