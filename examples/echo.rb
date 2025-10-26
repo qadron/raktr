@@ -6,12 +6,13 @@ port = 7331
 class EchoServer < Raktr::Connection
     include TLS
 
-    def initialize( append )
+    def initialize( append, options = { } )
+        @tls =  options[:tls]
         @append = append
     end
 
     def on_connect
-        start_tls
+        start_tls @tls
     end
 
     def on_read( data )
@@ -26,12 +27,13 @@ end
 class EchoClient < Raktr::Connection
     include TLS
 
-    def initialize( message )
+    def initialize( message, options = {} )
+        @tls =  options[:tls]
         @message = message
     end
 
     def on_connect
-        start_tls
+        start_tls @tls
 
         puts "Client - Sending: #{@message}"
         write @message
@@ -45,7 +47,19 @@ end
 
 Raktr do |r|
 
-    r.listen host, port , EchoServer, '(world, world, world...)'
-    r.connect host, port, EchoClient, 'Hello world!'
+    r.listen host, port ,EchoServer, '(world, world, world...)',
+        tls: {
+            ca:           '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
+            certificate: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/cert.pem',
+            public_key:  '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/pub.pem',
+            private_key: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/server/key.pem'
+        }
+    r.connect host, port, EchoClient, 'Hello world!',
+              tls: {
+                ca:           '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/ca-cert.pem',
+                certificate: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/cert.pem',
+                public_key:  '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/pub.pem',
+                private_key: '/home/zapotek/workspace/qadron/raktr/spec/support/fixtures/pems/client/key.pem'
+              }
 
 end
