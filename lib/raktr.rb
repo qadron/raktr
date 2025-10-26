@@ -189,7 +189,7 @@ class Raktr
         fail_if_not_running
 
         options = determine_connection_options( *args )
-        options.merge! determine_tls_options( :client )
+        options.merge! determine_tls_options( :client, options )
 
         connection = options[:handler].new( *options[:handler_options] )
         connection.raktr = self
@@ -550,7 +550,7 @@ class Raktr
     end
 
     def determine_tls_options( role, options )
-        role_inject = role == :client ? 'CLIENT' : 'SERVER'
+        role_inject = (role == :client ? 'CLIENT' : 'SERVER')
 
         options[:certificate] ||= ENV["RAKTR_TLS_#{role_inject}_CERTIFICATE"]
         options[:private_key] ||= ENV["RAKTR_TLS_#{role_inject}_PRIVATE_KEY"]
