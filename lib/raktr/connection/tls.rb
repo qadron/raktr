@@ -32,10 +32,13 @@ module TLS
         @ssl_context = OpenSSL::SSL::SSLContext.new
         @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-        certificate = options[:certificate]
-        private_key = options[:private_key]
-        public_key  = options[:public_key]
-        ca          = options[:ca]
+        if options[:tls]
+            options     = options[:tls]
+            certificate = options[:certificate]
+            private_key = options[:private_key]
+            public_key  = options[:public_key]
+            ca          = options[:ca]
+        end
 
         if certificate && private_key && public_key && ca
             CERTIFICATES[certificate] ||= File.open( certificate )

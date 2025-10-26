@@ -189,7 +189,7 @@ class Raktr
         fail_if_not_running
 
         options = determine_connection_options( *args )
-        options.merge! determine_tls_options( :client, options )
+        options[:tls] = determine_tls_options( :client )
 
         connection = options[:handler].new( *options[:handler_options] )
         connection.raktr = self
@@ -247,7 +247,10 @@ class Raktr
         fail_if_not_running
 
         options = determine_connection_options( *args )
-        options.merge! determine_tls_options( :server, options )
+        options[:tls] =  determine_tls_options( :server )
+
+        require 'ap'
+        ap options
 
         server_handler = proc do
             c = options[:handler].new( *options[:handler_options] )
@@ -549,14 +552,14 @@ class Raktr
              'The host OS does not support UNIX-domain sockets.'
     end
 
-    def determine_tls_options( role, options )
+    def determine_tls_options( role )
         role_inject = (role == :client ? 'CLIENT' : 'SERVER')
 
+        options = {}
         options[:certificate] ||= ENV["RAKTR_TLS_#{role_inject}_CERTIFICATE"]
         options[:private_key] ||= ENV["RAKTR_TLS_#{role_inject}_PRIVATE_KEY"]
         options[:public_key]  ||= ENV["RAKTR_TLS_#{role_inject}_PUBLIC_KEY"]
         options[:ca]          ||= ENV['RAKTR_TLS_CA']
-
         options
     end
 
