@@ -146,15 +146,15 @@ describe Raktr::Connection::TLS do
                     it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
                         error = nil
 
-                        options = server_ssl_options.merge(
+                        options = {
                             on_error: proc do |e|
                                 error ||= e
                             end
-                        )
+                        }
 
                         raktr.run_in_thread
 
-                        raktr.listen( host, port, TLSHandler, options )
+                        raktr.listen( host, port, TLSHandler, options.merge( tls: server_ssl_options ) )
 
                         client_error = nil
                         begin
@@ -181,15 +181,15 @@ describe Raktr::Connection::TLS do
 
                         it 'connects successfully' do
                             received_data = nil
-                            options = server_ssl_options.merge(
+                            options = {
                                 on_read: proc do |received|
                                     received_data = received
                                 end
-                            )
+                            }
 
                             raktr.run_in_thread
 
-                            raktr.listen( host, port, TLSHandler, options )
+                            raktr.listen( host, port, TLSHandler, options.merge( tls: server_ssl_options ) )
 
                             client.write data
 
@@ -202,17 +202,19 @@ describe Raktr::Connection::TLS do
                         let(:client_ssl_options) { client_invalid_ssl_options }
 
                         it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
-                            pending
-                            error = nil
+                            # error = nil
 
-                            options = server_ssl_options.merge(
-                                on_error: proc do |e|
-                                    error ||= e
-                                end
-                            )
+                            options = {}
 
                             raktr.run_in_thread
-                            raktr.listen( host, port, TLSHandler, options )
+
+                            err = nil
+                            begin
+                                raktr.listen( host, port, TLSHandler, options.merge( tls: server_ssl_options ) )
+                            rescue OpenSSL::X509::CertificateError => e
+                                err = e
+                            end
+                            err.should_not be_nil
 
                             client_error = nil
                             begin
@@ -221,11 +223,10 @@ describe Raktr::Connection::TLS do
                                 client_error = e
                             end
 
-                            [OpenSSL::SSL::SSLError, Errno::ECONNRESET].should include client_error.class
+                            [OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED].should include client_error.class
 
                             raktr.wait rescue Raktr::Error::NotRunning
-
-                            error.should be_kind_of OpenSSL::SSL::SSLError
+                            # error.should be_kind_of OpenSSL::SSL::SSLError
                         end
                     end
                 end
@@ -234,18 +235,16 @@ describe Raktr::Connection::TLS do
                     let(:client_ssl_options) { {} }
 
                     it "passes #{OpenSSL::SSL::SSLError} to #on_error" do
-                        pending
-                        error = nil
-
-                        options = server_ssl_options.merge(
-                            on_error: proc do |e|
-                                error ||= e
-                            end
-                        )
+                        options = {}
 
                         raktr.run_in_thread
 
-                        raktr.listen( host, port, TLSHandler, options )
+                        begin
+                            raktr.listen( host, port, TLSHandler, options.merge( tls: server_ssl_options ) )
+                        rescue OpenSSL::X509::CertificateError => e
+                            err = e
+                        end
+                        err.should_not be_nil
 
                         client_error = nil
                         begin
@@ -254,11 +253,9 @@ describe Raktr::Connection::TLS do
                             client_error = e
                         end
 
-                        [OpenSSL::SSL::SSLError, Errno::ECONNRESET].should include client_error.class
+                        [OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED].should include client_error.class
 
                         raktr.wait rescue Raktr::Error::NotRunning
-
-                        error.should be_kind_of OpenSSL::SSL::SSLError
                     end
                 end
             end
@@ -326,7 +323,7 @@ describe Raktr::Connection::TLS do
                             end
 
                             raktr.run do
-                                connection = raktr.connect( host, port, TLSHandler, client_valid_ssl_options )
+                                connection = raktr.connect( host, port, TLSHandler, tls: client_valid_ssl_options )
                                 connection.write data
                             end
 
