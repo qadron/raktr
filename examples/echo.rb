@@ -53,6 +53,7 @@ Raktr do |r|
             public_key:  './spec/support/fixtures/pems/server/pub.pem',
             private_key: './spec/support/fixtures/pems/server/key.pem'
         }
+
     r.connect host, port, EchoClient, 'Hello world!',
           tls: {
             ca:          './spec/support/fixtures/pems/ca-cert.pem',
