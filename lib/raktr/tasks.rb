@@ -20,7 +20,7 @@ class Raktr
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 class Tasks
-    include Mutex_m
+    include ::Mutex_m
 
     def initialize
         super
