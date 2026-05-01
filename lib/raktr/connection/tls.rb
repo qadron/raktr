@@ -41,15 +41,17 @@ module TLS
         end
 
         if certificate && private_key && public_key && ca
-            CERTIFICATES[certificate] ||= File.open( certificate )
+            # Cache PEM *contents* — caching File handles caused EOF on the
+            # second read of the same path.
+            CERTIFICATES[certificate] ||= File.read( certificate )
             @ssl_context.cert =
                 OpenSSL::X509::Certificate.new( CERTIFICATES[certificate] )
 
-            CERTIFICATES[private_key] ||= File.open( private_key )
+            CERTIFICATES[private_key] ||= File.read( private_key )
             @ssl_context.key  =
                 OpenSSL::PKey::RSA.new( CERTIFICATES[private_key] )
 
-            CERTIFICATES[public_key] ||= File.open( public_key )
+            CERTIFICATES[public_key] ||= File.read( public_key )
             @ssl_context.cert.public_key =
               OpenSSL::PKey::RSA.new( CERTIFICATES[public_key] )
 
